@@ -29,7 +29,7 @@ class CrudOperations:
         :param object_id: the ID of the model object to return.
         :returns: the matching model object.
         """
-        return session.query(cls).filter(cls.id == object_id).first()
+        return session.get(cls, object_id)
 
     @classmethod
     def create(cls, session: Session, **kwargs):
