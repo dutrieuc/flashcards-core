@@ -2,13 +2,13 @@ from typing import Any
 
 import random
 import logging
-from datetime import datetime
 
 from sqlalchemy.orm import Session
 
 from flashcards_core.errors import NoCardsToStudyException
 from flashcards_core.database import Deck, Card, Review
 from flashcards_core.schedulers.base import BaseScheduler
+
 
 #
 # Parameter keys for RandomScheduler
@@ -112,7 +112,6 @@ class RandomScheduler(BaseScheduler):
         logging.debug(
             f"Creating Review for Card '{card}'' "
             f"with result '{result}' "
-            f"at time (approx.) {datetime.utcnow()}"
         )
 
         # Create the review

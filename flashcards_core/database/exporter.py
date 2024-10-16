@@ -329,7 +329,7 @@ def _export_find_related_associative_tables(
     for column in associative_table.columns:
         for key in column.foreign_keys:
             if key.column.table.fullname == item.__class__.__tablename__:
-                stmt = select(associative_table).where(key.column == item.id)
+                stmt = select(associative_table).where(column == item.id)
                 associations = session.execute(stmt).all()
                 for association in associations:
 
