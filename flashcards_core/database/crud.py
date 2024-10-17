@@ -88,10 +88,10 @@ class CrudOperations:
         session.delete(db_object)
         session.commit()
 
-
-
     @classmethod
-    async def get_all_async(cls, session: Session, offset: int = 0, limit: int = 100) -> List[Any]:
+    async def get_all_async(
+        cls, session: Session, offset: int = 0, limit: int = 100
+    ) -> List[Any]:
         """
         Returns a list of all the model objects available in the DB, or a
         subset of them (asyncio-friendly).
@@ -104,7 +104,6 @@ class CrudOperations:
         stmt = select(cls).limit(limit).offset(offset)
         results = await session.scalars(stmt)
         return results.all()
-        
 
     @classmethod
     async def get_one_async(cls, session: Session, object_id: int) -> Optional[Any]:
@@ -115,10 +114,7 @@ class CrudOperations:
         :param object_id: the ID of the model object to return.
         :returns: the matching model object.
         """
-        stmt = select(cls).where(cls.id == object_id)
-        results = await session.scalars(stmt)
-        return results.first()
-
+        return await session.get(cls, object_id)
 
     @classmethod
     async def create_async(cls, session: Session, **kwargs):
@@ -148,7 +144,8 @@ class CrudOperations:
         :raises: ObjectNotFoundException if no model object with the given
             ID was found in the database.
         """
-        db_object = cls.get_one_async(session=session, object_id=object_id)
+
+        db_object = await cls.get_one_async(session=session, object_id=object_id)
         if not db_object:
             raise ObjectNotFoundException(
                 "Model object not found. You must create it before updating it."
@@ -171,8 +168,8 @@ class CrudOperations:
         :raises: ObjectNotFoundException if no object with the given
             ID was found in the database.
         """
-        db_object = cls.get_one_async(session=session, object_id=object_id)
+        db_object = await cls.get_one_async(session=session, object_id=object_id)
         if not db_object:
             raise ObjectNotFoundException("Model object not found. Cannot delete it.")
-        session.delete(db_object)
+        await session.delete(db_object)
         await session.commit()
